@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Hitung estimasi potensi penghematan bisnis kuliner bersama RESCU.ID.">
+  <title>Kalkulator Penghematan Mitra | RESCU.ID</title>
+  <style>
+    :root {
+      --green: #176b61;
+      --green-dark: #124c46;
+      --green-light: #e4f2eb;
+      --cream: #faf7ee;
+      --yellow: #f3d36a;
+      --ink: #263b36;
+      --muted: #71817b;
+      --line: #dce6df;
+      --white: #fff;
+      --shadow: 0 18px 55px rgba(18, 76, 70, .10);
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background: var(--cream);
+      color: var(--ink);
+      font-family: Inter, "Plus Jakarta Sans", system-ui, -apple-system, sans-serif;
+      line-height: 1.55;
+    }
+    .wrap { width: min(1120px, calc(100% - 36px)); margin: 0 auto; padding: 54px 0 64px; }
+    .eyebrow {
+      display: inline-flex; align-items: center; gap: 8px;
+      color: var(--green); background: var(--green-light);
+      border-radius: 999px; padding: 7px 13px; font-size: 12px;
+      font-weight: 800; letter-spacing: .08em; text-transform: uppercase;
+    }
+    .eyebrow:before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: var(--green); }
+    header { max-width: 720px; margin-bottom: 30px; }
+    h1 { margin: 16px 0 12px; font-size: clamp(32px, 5vw, 52px); line-height: 1.08; letter-spacing: -.045em; color: var(--green-dark); }
+    .intro { color: #5d7069; font-size: 16px; max-width: 650px; margin: 0; }
+    .layout { display: grid; grid-template-columns: minmax(0, 1.05fr) minmax(340px, .95fr); gap: 22px; align-items: start; }
+    .panel { background: var(--white); border: 1px solid var(--line); border-radius: 22px; box-shadow: var(--shadow); }
+    .form-panel { padding: 28px; }
+    .result-panel { padding: 28px; position: sticky; top: 20px; overflow: hidden; }
+    h2 { margin: 0 0 5px; font-size: 21px; color: var(--green-dark); letter-spacing: -.02em; }
+    .sub { margin: 0 0 23px; color: var(--muted); font-size: 13px; }
+    .field { margin: 0 0 19px; }
+    .field-head { display: flex; justify-content: space-between; gap: 12px; align-items: baseline; margin-bottom: 7px; }
+    label { font-weight: 700; font-size: 13px; }
+    .hint { color: var(--muted); font-size: 11px; }
+    .input-wrap { display: flex; align-items: center; border: 1px solid #cddbd2; border-radius: 11px; background: #fff; overflow: hidden; transition: border .2s, box-shadow .2s; }
+    .input-wrap:focus-within { border-color: var(--green); box-shadow: 0 0 0 3px rgba(23,107,97,.10); }
+    .prefix, .suffix { color: #71817b; background: #f5f8f5; padding: 11px 13px; font-size: 13px; font-weight: 700; }
+    input[type="number"] { width: 100%; min-width: 0; border: 0; outline: 0; padding: 11px 12px; color: var(--ink); font: inherit; font-size: 14px; background: transparent; }
+    .section-label { display: flex; align-items: center; gap: 10px; color: var(--green); font-size: 12px; font-weight: 800; text-transform: uppercase; letter-spacing: .07em; margin: 27px 0 15px; }
+    .section-label:after { content: ""; height: 1px; flex: 1; background: var(--line); }
+    .range-row { display: flex; gap: 14px; align-items: center; }
+    input[type="range"] { flex: 1; accent-color: var(--green); cursor: pointer; }
+    .range-value { min-width: 58px; text-align: right; font-size: 14px; font-weight: 800; color: var(--green-dark); }
+    .result-top { background: var(--green-dark); color: white; padding: 25px 26px; margin: -28px -28px 23px; }
+    .result-top .caption { color: #c8e1d6; font-size: 12px; font-weight: 700; }
+    .total { font-size: clamp(30px, 4vw, 42px); line-height: 1.15; font-weight: 850; letter-spacing: -.04em; margin: 7px 0 5px; }
+    .period { color: #c8e1d6; font-size: 12px; }
+    .metric { display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; padding: 15px 0; border-bottom: 1px solid var(--line); }
+    .metric:last-of-type { border-bottom: 0; }
+    .metric-name { font-size: 13px; font-weight: 750; }
+    .metric-desc { display: block; font-size: 11px; color: var(--muted); font-weight: 400; margin-top: 2px; }
+    .metric-value { text-align: right; font-size: 16px; font-weight: 850; color: var(--green-dark); white-space: nowrap; }
+    .metric-value small { display: block; color: var(--muted); font-size: 10px; font-weight: 500; }
+    .note { background: #f5f8f5; border-radius: 12px; padding: 13px 14px; color: #65766e; font-size: 11px; margin-top: 17px; }
+    .note strong { color: var(--green-dark); }
+    .actions { display: flex; gap: 10px; margin-top: 18px; flex-wrap: wrap; }
+    button { border: 0; border-radius: 999px; padding: 11px 17px; font: inherit; font-size: 12px; font-weight: 800; cursor: pointer; }
+    .btn-primary { color: #fff; background: var(--green); }
+    .btn-secondary { color: var(--green-dark); background: var(--green-light); }
+    .fineprint { margin: 24px 0 0; font-size: 11px; color: #7a8982; max-width: 850px; }
+    .footer { margin-top: 35px; display: flex; justify-content: space-between; gap: 16px; color: #809088; font-size: 11px; }
+    .brand { color: var(--green); font-weight: 900; letter-spacing: .08em; }
+    @media (max-width: 800px) {
+      .wrap { padding-top: 35px; }
+      .layout { grid-template-columns: 1fr; }
+      .result-panel { position: static; }
+    }
+    @media (max-width: 480px) {
+      .wrap { width: min(100% - 24px, 1120px); }
+      .form-panel, .result-panel { padding: 20px; border-radius: 17px; }
+      .result-top { margin: -20px -20px 18px; padding: 22px 20px; }
+      .footer { flex-direction: column; }
+    }
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <header>
+      <span class="eyebrow">RESCU.ID · Untuk calon mitra</span>
+      <h1>Berapa banyak biaya yang bisa bisnis Anda hemat?</h1>
+      <p class="intro">Masukkan kondisi operasional bisnis Anda untuk melihat estimasi potensi penghematan dari produksi yang lebih terencana dan penjualan makanan surplus.</p>
+    </header>
+
+    <section class="layout" aria-label="Kalkulator penghematan mitra">
+      <div class="panel form-panel">
+        <h2>Data bisnis Anda</h2>
+        <p class="sub">Gunakan rata-rata harian atau bulanan. Ubah asumsi agar hasilnya mendekati kondisi bisnis Anda.</p>
+
+        <div class="section-label">01 · Kondisi surplus saat ini</div>
+        <div class="field">
+          <div class="field-head"><label for="surplus">Makanan tidak terjual per hari</label><span class="hint">Dalam porsi</span></div>
+          <div class="input-wrap"><input id="surplus" type="number" min="0" step="1" value="20"></div>
+        </div>
+        <div class="field">
+          <div class="field-head"><label for="cost">Biaya produksi rata-rata per porsi</label><span class="hint">Bahan baku + produksi</span></div>
+          <div class="input-wrap"><span class="prefix">Rp</span><input id="cost" type="number" min="0" step="500" value="18000"></div>
+        </div>
+        <div class="field">
+          <div class="field-head"><label for="days">Hari operasional per bulan</label><span class="hint">Hari</span></div>
+          <div class="input-wrap"><input id="days" type="number" min="1" max="31" step="1" value="26"></div>
+        </div>
+
+        <div class="section-label">02 · Asumsi dampak RESCU.ID</div>
+        <div class="field">
+          <div class="field-head"><label for="reduction">Surplus yang berhasil dicegah oleh prediksi</label><span class="hint">Asumsi simulasi</span></div>
+          <div class="range-row"><input id="reduction" type="range" min="0" max="80" step="5" value="20"><output class="range-value" id="reductionOut">20%</output></div>
+        </div>
+        <div class="field">
+          <div class="field-head"><label for="rescue">Sisa surplus yang berhasil dijual</label><span class="hint">Melalui marketplace</span></div>
+          <div class="range-row"><input id="rescue" type="range" min="0" max="100" step="5" value="50"><output class="range-value" id="rescueOut">50%</output></div>
+        </div>
+        <div class="field">
+          <div class="field-head"><label for="price">Harga jual rata-rata makanan surplus</label><span class="hint">Per porsi</span></div>
+          <div class="input-wrap"><span class="prefix">Rp</span><input id="price" type="number" min="0" step="500" value="10000"></div>
+        </div>
+        <div class="actions">
+          <button class="btn-secondary" type="button" id="reset">Reset simulasi</button>
+        </div>
+      </div>
+
+      <aside class="panel result-panel" aria-live="polite">
+        <div class="result-top">
+          <div class="caption">Estimasi manfaat finansial per bulan</div>
+          <div class="total" id="total">Rp 0</div>
+          <div class="period">Potensi biaya yang dihindari + pendapatan kotor dari surplus</div>
+        </div>
+        <div class="metric">
+          <div><span class="metric-name">Penghematan biaya produksi</span><span class="metric-desc">Porsi surplus yang berhasil dicegah</span></div>
+          <div class="metric-value" id="saving">Rp 0<small id="savingQty">0 porsi/bulan dicegah</small></div>
+        </div>
+        <div class="metric">
+          <div><span class="metric-name">Pendapatan kotor dari surplus</span><span class="metric-desc">Sisa surplus yang berhasil dijual</span></div>
+          <div class="metric-value" id="revenue">Rp 0<small id="soldQty">0 porsi/bulan terjual</small></div>
+        </div>
+        <div class="metric">
+          <div><span class="metric-name">Estimasi surplus tersisa</span><span class="metric-desc">Setelah prediksi dan penjualan surplus</span></div>
+          <div class="metric-value" id="leftover">0 porsi<small>Per bulan</small></div>
+        </div>
+        <div class="note">
+          <strong>Catatan perhitungan:</strong> penghematan produksi dihitung dari biaya per porsi yang tidak jadi dikeluarkan. Pendapatan marketplace adalah omzet kotor, bukan laba bersih. Biaya layanan, kemasan, diskon, dan pengiriman belum dikurangi.
+        </div>
+        <div class="actions">
+          <button class="btn-primary" type="button" id="print">Cetak hasil simulasi</button>
+        </div>
+      </aside>
+    </section>
+
+    <p class="fineprint">Hasil ini merupakan simulasi ilustratif, bukan jaminan penghematan. Persentase dampak merupakan asumsi yang dapat disesuaikan, karena dokumen konsep RESCU.ID belum menetapkan angka efektivitas operasional yang tervalidasi. Hasil aktual bergantung pada pola penjualan, jenis makanan, harga, dan operasional masing-masing mitra.</p>
+    <footer class="footer"><span class="brand">RESCU.ID</span><span>Selamatkan makanan. Kurangi pemborosan.</span></footer>
+  </main>
+
+  <script>
+    const ids = ["surplus", "cost", "days", "reduction", "rescue", "price"];
+    const el = Object.fromEntries(ids.map(id => [id, document.getElementById(id)]));
+    const rupiah = value => new Intl.NumberFormat("id-ID", {
+      style: "currency", currency: "IDR", maximumFractionDigits: 0
+    }).format(Math.max(0, Math.round(value)));
+    const number = id => Math.max(0, Number(el[id].value) || 0);
+
+    function calculate() {
+      const dailySurplus = number("surplus");
+      const unitCost = number("cost");
+      const days = Math.min(31, number("days"));
+      const preventRate = number("reduction") / 100;
+      const sellRate = number("rescue") / 100;
+      const salePrice = number("price");
+
+      const monthlySurplus = dailySurplus * days;
+      const preventedQty = monthlySurplus * preventRate;
+      const remainingAfterPrediction = monthlySurplus - preventedQty;
+      const soldQty = remainingAfterPrediction * sellRate;
+      const leftoverQty = remainingAfterPrediction - soldQty;
+
+      const productionSaving = preventedQty * unitCost;
+      const grossRevenue = soldQty * salePrice;
+      const totalBenefit = productionSaving + grossRevenue;
+
+      document.getElementById("reductionOut").textContent = `${Math.round(preventRate * 100)}%`;
+      document.getElementById("rescueOut").textContent = `${Math.round(sellRate * 100)}%`;
+      document.getElementById("total").textContent = rupiah(totalBenefit);
+      document.getElementById("saving").childNodes[0].textContent = rupiah(productionSaving);
+      document.getElementById("savingQty").textContent = `${Math.round(preventedQty).toLocaleString("id-ID")} porsi/bulan dicegah`;
+      document.getElementById("revenue").childNodes[0].textContent = rupiah(grossRevenue);
+      document.getElementById("soldQty").textContent = `${Math.round(soldQty).toLocaleString("id-ID")} porsi/bulan terjual`;
+      document.getElementById("leftover").childNodes[0].textContent = `${Math.round(leftoverQty).toLocaleString("id-ID")} porsi`;
+    }
+
+    ids.forEach(id => el[id].addEventListener("input", calculate));
+    document.getElementById("reset").addEventListener("click", () => {
+      const defaults = { surplus: 20, cost: 18000, days: 26, reduction: 20, rescue: 50, price: 10000 };
+      Object.entries(defaults).forEach(([id, value]) => el[id].value = value);
+      calculate();
+    });
+    document.getElementById("print").addEventListener("click", () => window.print());
+    calculate();
+  </script>
+</body>
+</html>
